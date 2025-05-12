@@ -1,19 +1,11 @@
 package com.splitwise.models;
 
+import com.splitwise.strategies.SplitStrategy;
+
 import java.util.List;
 
 public class PercentExpense extends Expense {
-    public PercentExpense(double amount, User paidBy, List<Split> splits) {
-        super(amount, paidBy, splits, ExpenseType.PERCENT);
-    }
-
-    @Override
-    public boolean validate() {
-        double totalPercent = 0;
-        for (Split split : splits) {
-            if (!(split instanceof PercentSplit)) return false;
-            totalPercent += ((PercentSplit) split).getPercent();
-        }
-        return totalPercent == 100;
+    public PercentExpense(double amount, User paidBy, List<Split> splits, SplitStrategy strategy) {
+        super(amount, paidBy, splits, ExpenseType.PERCENT, strategy);
     }
 }

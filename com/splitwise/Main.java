@@ -99,8 +99,6 @@ public class Main {
                 }
                 case "SIMPLIFY" -> expenseService.simplifyDebts();
 
-                case "PRINTSHEET" -> expenseService.printBalance();
-
 
                 default -> System.out.println("Invalid command");
             }

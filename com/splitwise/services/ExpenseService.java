@@ -1,6 +1,8 @@
 package com.splitwise.services;
 
 import com.splitwise.models.*;
+import com.splitwise.strategies.*;
+
 import java.util.*;
 
 public class ExpenseService {
@@ -15,7 +17,6 @@ public class ExpenseService {
         this.balanceSheet = new BalanceSheet();
     }
 
-    // Register a user
     public void addUser(String id, String name, String email, String mobile) {
         users.put(id, new User(id, name, email, mobile));
     }
@@ -35,17 +36,17 @@ public class ExpenseService {
                 for (Split split : splits) {
                     split.setAmount(share);
                 }
-                expense = new EqualExpense(amount, paidBy, splits);
+                expense = new EqualExpense(amount, paidBy, splits, new EqualSplitStrategy());
             }
             case EXACT -> {
-                expense = new ExactExpense(amount, paidBy, splits);
+                expense = new ExactExpense(amount, paidBy, splits, new ExactSplitStrategy());
             }
             case PERCENT -> {
                 for (Split split : splits) {
                     if (!(split instanceof PercentSplit)) continue;
                     split.setAmount(amount * ((PercentSplit) split).getPercent() / 100.0);
                 }
-                expense = new PercentExpense(amount, paidBy, splits);
+                expense = new PercentExpense(amount, paidBy, splits, new PercentSplitStrategy());
             }
             default -> throw new IllegalArgumentException("Invalid Expense Type");
         }
@@ -69,13 +70,11 @@ public class ExpenseService {
     public void showBalance(String userId) {
         balanceSheet.showBalance(userId);
     }
-    
 
     public void simplifyDebts() {
         System.out.println("Simplified Debt Settlements:");
         DebtSimplifier.simplify(balanceSheet.getBalanceSheet());
     }
-    public void printBalance() {
-        System.out.println(balanceSheet.getBalanceSheet());
-    }
+
+  
 }
